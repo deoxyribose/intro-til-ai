@@ -12,12 +12,14 @@ parseStreet :: [String] -> Street
 parseStreet (x1:y1:street:x2:y2:_) = (street, [(read x1, read y1),(read x2, read y2)])
 parseStreet x = error ("Wrong data format: " ++ show x)
 
+-- Build an AL with coordinates for every street.
 unify :: [Street] -> [Street] -> [Street]
 unify table []     = table
 unify table (x@((street,corners)):xs) = unify newTable xs where
     newTable = maybe (x:table) expand $ lookup street table
     expand oldCorners = addToAL table street (union corners oldCorners)
 
+-- Returns Just the coordinates of the intersection of two streets, or Nothing,.
 corner :: [Street] -> String -> String -> Maybe Coordinate
 corner [] _ _ = Nothing
 corner table a b = fmap head $ intersect <$> aCorners <*> bCorners where
